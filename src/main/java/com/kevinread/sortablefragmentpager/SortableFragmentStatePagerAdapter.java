@@ -224,6 +224,27 @@ public abstract class SortableFragmentStatePagerAdapter extends PagerAdapter {
         mCurTransaction.remove(fragment);
     }
 
+    public void destroyAllFragments() {
+        /* if (mCurTransaction == null) {
+            mCurTransaction = mFragmentManager.beginTransaction();
+        } */
+
+        final int length = mFragments.size();
+        while (mSavedState.size() <= length) {
+            mSavedState.add(null);
+        }
+        for (int i = 0; i < length; i++) {
+            final Fragment fr = mFragments.get(i);
+            if (fr != null) {
+                mSavedState.set(i, mFragmentManager.saveFragmentInstanceState(fr));
+                mFragments.set(i, null);
+                // mCurTransaction.remove(fr);
+            }
+        }
+        /* mCurTransaction.commit();
+        mCurTransaction = null; */
+    }
+
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         Fragment fragment = (Fragment)object;
