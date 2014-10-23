@@ -75,7 +75,7 @@ public abstract class SortableFragmentStatePagerAdapter extends PagerAdapter {
     private long[] mItemIds = new long[] {};
     private ArrayList<Fragment.SavedState> mSavedState = new ArrayList<Fragment.SavedState>();
     private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
-    private Fragment mCurrentPrimaryItem = null;
+    protected Fragment mCurrentPrimaryItem = null;
 
     public SortableFragmentStatePagerAdapter(FragmentManager fm) {
 
@@ -330,15 +330,19 @@ public abstract class SortableFragmentStatePagerAdapter extends PagerAdapter {
             for (String key: keys) {
                 if (key.startsWith("f")) {
                     int index = Integer.parseInt(key.substring(1));
-                    Fragment f = mFragmentManager.getFragment(bundle, key);
-                    if (f != null) {
-                        while (mFragments.size() <= index) {
-                            mFragments.add(null);
+                    try {
+                        Fragment f = mFragmentManager.getFragment(bundle, key);
+                        if (f != null) {
+                            while (mFragments.size() <= index) {
+                                mFragments.add(null);
+                            }
+                            f.setMenuVisibility(false);
+                            mFragments.set(index, f);
+                        } else {
+                            Log.w(TAG, "Bad fragment at key " + key);
                         }
-                        f.setMenuVisibility(false);
-                        mFragments.set(index, f);
-                    } else {
-                        Log.w(TAG, "Bad fragment at key " + key);
+                    } catch (Exception ex) {
+                        Log.w(TAG, "Cannot restore fragment " + key, ex);
                     }
                 }
             }
