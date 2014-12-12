@@ -286,10 +286,6 @@ public abstract class SortableFragmentStatePagerAdapter extends PagerAdapter {
         if (mSavedState.size() > 0) {
             state = new Bundle();
 
-            if (mItemIds.length > 0) {
-                state.putLongArray("itemids", mItemIds);
-            }
-
             Fragment.SavedState[] fss = new Fragment.SavedState[mSavedState.size()];
             mSavedState.toArray(fss);
             state.putParcelableArray("states", fss);
@@ -303,6 +299,13 @@ public abstract class SortableFragmentStatePagerAdapter extends PagerAdapter {
                 String key = "f" + i;
                 mFragmentManager.putFragment(state, key, f);
             }
+        }
+
+        if (mItemIds.length > 0) {
+            if (state == null) {
+                state = new Bundle();
+            }
+            state.putLongArray("itemids", mItemIds);
         }
         return state;
     }
